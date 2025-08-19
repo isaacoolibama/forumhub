@@ -1,0 +1,383 @@
+{
+	"info": {
+		"_postman_id": "forumhub-api-collection",
+		"name": "FórumHub API",
+		"description": "Coleção da API REST do FórumHub com autenticação JWT\n\nEndpoints essenciais para autenticação e gestão de tópicos.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "forumhub-api"
+	},
+	"item": [
+		{
+			"name": "🔐 Autenticação",
+			"description": "Endpoints para autenticação e gerenciamento de usuários",
+			"item": [
+				{
+					"name": "Cadastrar Usuário",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"nome\": \"João Silva\",\n    \"email\": \"joao@email.com\",\n    \"senha\": \"123456\",\n    \"tipoPerfil\": 1\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/auth/cadastro",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"auth",
+								"cadastro"
+							]
+						},
+						"description": "Cadastra um novo usuário no sistema\n- tipoPerfil: 1 = USUARIO, 2 = ADMIN"
+					},
+					"response": []
+				},
+				{
+					"name": "Login",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"joao@email.com\",\n    \"senha\": \"123456\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/auth/login",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						},
+						"description": "Login para obter token JWT (use o email e senha do usuário cadastrado)"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "📝 Tópicos",
+			"description": "Endpoints para gestão completa de tópicos",
+			"item": [
+				{
+					"name": "Listar Todos os Tópicos",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/topicos",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"topicos"
+							]
+						},
+						"description": "Lista todos os tópicos do fórum (ENDPOINT PÚBLICO)"
+					},
+					"response": []
+				},
+				{
+					"name": "Buscar Tópico por ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/topicos/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"topicos",
+								"1"
+							]
+						},
+						"description": "Busca um tópico específico pelo ID (ENDPOINT PÚBLICO)"
+					},
+					"response": []
+				},
+				{
+					"name": "Criar Tópico",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}",
+								"description": "Token JWT obtido no login"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"titulo\": \"Dúvida sobre Spring Boot\",\n    \"mensagem\": \"Como configurar o Spring Security corretamente?\",\n    \"cursoId\": 1\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/topicos",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"topicos"
+							]
+						},
+						"description": "Cria um novo tópico no fórum (REQUER AUTENTICAÇÃO)\n- O usuário logado será automaticamente o autor"
+					},
+					"response": []
+				},
+				{
+					"name": "Atualizar Tópico",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}",
+								"description": "Token JWT obtido no login"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"titulo\": \"Dúvida sobre Spring Boot - Atualizado\",\n    \"mensagem\": \"Como configurar o Spring Security corretamente? (Versão atualizada)\",\n    \"cursoId\": 1\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/topicos/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"topicos",
+								"1"
+							]
+						},
+						"description": "Atualiza um tópico existente (REQUER AUTENTICAÇÃO)\n- Apenas o autor ou admin pode atualizar"
+					},
+					"response": []
+				},
+				{
+					"name": "Deletar Tópico",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}",
+								"description": "Token JWT obtido no login"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/topicos/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"topicos",
+								"1"
+							]
+						},
+						"description": "Remove um tópico do sistema (REQUER AUTENTICAÇÃO)\n- Apenas o autor ou admin pode deletar"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "🧪 Testes de Segurança",
+			"description": "Testes para validar a segurança da API",
+			"item": [
+				{
+					"name": "Teste - Criar Tópico sem Autenticação",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"titulo\": \"Tópico sem autenticação\",\n    \"mensagem\": \"Este tópico não deve ser criado\",\n    \"cursoId\": 1\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/topicos",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"topicos"
+							]
+						},
+						"description": "Testa se a API bloqueia criação de tópicos sem autenticação (deve retornar 401)"
+					},
+					"response": []
+				},
+				{
+					"name": "Teste - Atualizar Tópico sem Autenticação",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"titulo\": \"Tópico atualizado sem auth\",\n    \"mensagem\": \"Esta atualização não deve funcionar\",\n    \"cursoId\": 1\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/topicos/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"topicos",
+								"1"
+							]
+						},
+						"description": "Testa se a API bloqueia atualização de tópicos sem autenticação (deve retornar 401)"
+					},
+					"response": []
+				},
+				{
+					"name": "Teste - Deletar Tópico sem Autenticação",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/topicos/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"topicos",
+								"1"
+							]
+						},
+						"description": "Testa se a API bloqueia deleção de tópicos sem autenticação (deve retornar 401)"
+					},
+					"response": []
+				},
+				{
+					"name": "Teste - Cadastrar Usuário Admin",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"nome\": \"Teste Admin\",\n    \"email\": \"teste.admin@email.com\",\n    \"senha\": \"123456\",\n    \"tipoPerfil\": 2\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/auth/cadastro",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"auth",
+								"cadastro"
+							]
+						},
+						"description": "Testa cadastro de usuário com perfil ADMIN (deve retornar 200 com perfil ADMIN)"
+					},
+					"response": []
+				},
+				{
+					"name": "Teste - Cadastrar Usuário Comum",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"nome\": \"Teste Usuario\",\n    \"email\": \"teste.usuario@email.com\",\n    \"senha\": \"123456\",\n    \"tipoPerfil\": 1\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/auth/cadastro",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"auth",
+								"cadastro"
+							]
+						},
+						"description": "Testa cadastro de usuário com perfil USUARIO (deve retornar 200 com perfil USUARIO)"
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"// Captura automaticamente o token JWT das respostas de login",
+					"if (pm.response.code === 200) {",
+					"    const responseJson = pm.response.json();",
+					"    if (responseJson.token) {",
+					"        pm.collectionVariables.set('auth_token', responseJson.token);",
+					"        console.log('Token JWT capturado automaticamente!');",
+					"    }",
+					"}"
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:8080",
+			"type": "string",
+			"description": "URL base da API FórumHub"
+		},
+		{
+			"key": "auth_token",
+			"value": "",
+			"type": "string",
+			"description": "Token JWT obtido após fazer login (será preenchido automaticamente)"
+		}
+	]
+}
