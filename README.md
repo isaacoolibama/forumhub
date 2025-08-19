@@ -125,7 +125,7 @@ docker-compose down
 
 **1. Clone e Setup**
 ```bash
-git clone <seu-repositorio>
+git clone https://github.com/isaacoolibama/forumhub.git
 cd hub
 ```
 
